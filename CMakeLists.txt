@@ -8,10 +8,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 set(SOURCE_FILES
-        glad.c
-        Image.cpp
-        Player.cpp
-        main.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/glad.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Image.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Player.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
 set(ADDITIONAL_INCLUDE_DIRS
         dependencies/include/GLAD)
