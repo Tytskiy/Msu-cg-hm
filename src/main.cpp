@@ -1,26 +1,24 @@
-#include "Image.h"
-#include "Player.h"
 #include "common.h"
+#include "Render.h"
+#include "Player.h"
+#include "Game.h"
+
 #define GLFW_DLL
+
 #include <GLFW/glfw3.h>
 
-constexpr GLsizei WINDOW_WIDTH = 512, WINDOW_HEIGHT = 512;
+constexpr GLsizei WINDOW_WIDTH = 960, WINDOW_HEIGHT = 960;
 
-struct InputState {
-    bool keys[1024]{};                 //массив состояний кнопок - нажата/не нажата
-    GLfloat lastX = 400, lastY = 300;  //исходное положение мыши
-    bool firstMouse = true;
-    bool captureMouse = true;  // Мышка захвачена нашим приложением или нет?
-    bool capturedMouseJustNow = false;
-} static Input;
-
+Game game(WINDOW_WIDTH, WINDOW_HEIGHT);
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
 void OnKeyboardPressed(GLFWwindow *window, int key, int scancode, int action, int mode) {
     switch (key) {
         case GLFW_KEY_ESCAPE:
-            if (action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
+            if (action == GLFW_PRESS) {
+                glfwSetWindowShouldClose(window, GL_TRUE);
+            }
             break;
         case GLFW_KEY_1:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -30,45 +28,35 @@ void OnKeyboardPressed(GLFWwindow *window, int key, int scancode, int action, in
             break;
         default:
             if (action == GLFW_PRESS)
-                Input.keys[key] = true;
+                game.inputState.keys[key] = true;
             else if (action == GLFW_RELEASE)
-                Input.keys[key] = false;
+                game.inputState.keys[key] = false;
     }
 }
 
-void processPlayerMovement(Player &player) {
-    if (Input.keys[GLFW_KEY_W])
-        player.ProcessInput(MovementDir::UP);
-    else if (Input.keys[GLFW_KEY_S])
-        player.ProcessInput(MovementDir::DOWN);
-    if (Input.keys[GLFW_KEY_A])
-        player.ProcessInput(MovementDir::LEFT);
-    else if (Input.keys[GLFW_KEY_D])
-        player.ProcessInput(MovementDir::RIGHT);
-}
-
 void OnMouseButtonClicked(GLFWwindow *window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) Input.captureMouse = !Input.captureMouse;
-
-    if (Input.captureMouse) {
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+        game.inputState.captureMouse = !game.inputState.captureMouse;
+    }
+    if (game.inputState.captureMouse) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        Input.capturedMouseJustNow = true;
+        game.inputState.capturedMouseJustNow = true;
     } else
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void OnMouseMove(GLFWwindow *window, double xpos, double ypos) {
-    if (Input.firstMouse) {
-        Input.lastX = float(xpos);
-        Input.lastY = float(ypos);
-        Input.firstMouse = false;
+    if (game.inputState.firstMouse) {
+        game.inputState.lastX = float(xpos);
+        game.inputState.lastY = float(ypos);
+        game.inputState.firstMouse = false;
     }
 
-    GLfloat xoffset = float(xpos) - Input.lastX;
-    GLfloat yoffset = Input.lastY - float(ypos);
+    GLfloat xoffset = float(xpos) - game.inputState.lastX;
+    GLfloat yoffset = game.inputState.lastY - float(ypos);
 
-    Input.lastX = float(xpos);
-    Input.lastY = float(ypos);
+    game.inputState.lastX = float(xpos);
+    game.inputState.lastY = float(ypos);
 }
 
 void OnMouseScroll(GLFWwindow *window, double xoffset, double yoffset) {
@@ -76,7 +64,7 @@ void OnMouseScroll(GLFWwindow *window, double xoffset, double yoffset) {
 }
 
 int initGL() {
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
@@ -97,12 +85,12 @@ int initGL() {
 int main(int argc, char **argv) {
     if (!glfwInit()) return -1;
 
-    //	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    //	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    //	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "task1 base project", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game", nullptr, nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -122,31 +110,32 @@ int main(int argc, char **argv) {
     GLenum gl_error = glGetError();
     while (gl_error != GL_NO_ERROR) gl_error = glGetError();
 
-    Point starting_pos{.x = WINDOW_WIDTH / 2, .y = WINDOW_HEIGHT / 2};
-    Player player{starting_pos};
-
-    Image img("../resources/tex.png");
-    // Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
+    // Render img("../resources/tex.png");
+    // Render screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     GL_CHECK_ERRORS;
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     GL_CHECK_ERRORS;
 
-    // game loop
+    game.Init();
+
     while (!glfwWindowShouldClose(window)) {
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         glfwPollEvents();
 
-        processPlayerMovement(player);
-        player.Draw(img);
+        // Обрабатываем пользовательский ввод с клавиатуры
+        game.ProcessInput(deltaTime);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        GL_CHECK_ERRORS;
-        glDrawPixels(WINDOW_WIDTH, WINDOW_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, img.DynamicImage());
-        GL_CHECK_ERRORS;
+        // Обновляем состояние игры
+        game.Update(deltaTime);
+
+        // Рендер
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        game.Render();
 
         glfwSwapBuffers(window);
     }

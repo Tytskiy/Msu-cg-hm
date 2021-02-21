@@ -2,8 +2,9 @@
 #define MAIN_UTILS_H
 
 #include <iostream>
-template <typename T>
-T *CopyFromPointer(T *p, size_t size)  //перенести в отдельный модуль
+
+template<typename T>
+T *CopyFromPointer(const T *p, size_t size)  //перенести в отдельный модуль
 {
     T *new_p = new T[size];
     for (size_t i = 0; i < size; i++) {
@@ -11,7 +12,8 @@ T *CopyFromPointer(T *p, size_t size)  //перенести в отдельны�
     }
     return new_p;
 }
-template <typename T>
+
+template<typename T>
 void FillArray(T *p, size_t size, T filler)  //перенести в отдельный модуль
 {
     for (size_t i = 0; i < size; i++) {

@@ -1,41 +1,37 @@
 #include "Player.h"
+#include <iostream>
 
-bool Player::Moved() const {
-    if (coords.x == old_coords.x && coords.y == old_coords.y)
-        return false;
-    else
-        return true;
-}
-
-void Player::ProcessInput(MovementDir dir) {
-    int move_dist = move_speed * 1;
+void Player::Move(MovementDir dir, float dt) {
     switch (dir) {
         case MovementDir::UP:
-            old_coords.y = coords.y;
-            coords.y += move_dist;
+            oldCoords.y = currCoords.y;
+            currCoords.y += dt * velocity;
             break;
         case MovementDir::DOWN:
-            old_coords.y = coords.y;
-            coords.y -= move_dist;
+            oldCoords.y = currCoords.y;
+            currCoords.y -= dt * velocity;
             break;
         case MovementDir::LEFT:
-            old_coords.x = coords.x;
-            coords.x -= move_dist;
+            oldCoords.x = currCoords.x;
+            currCoords.x -= dt * velocity;
             break;
         case MovementDir::RIGHT:
-            old_coords.x = coords.x;
-            coords.x += move_dist;
+            oldCoords.x = currCoords.x;
+            currCoords.x += dt * velocity;
             break;
         default:
             break;
     }
 }
 
-void Player::Draw(Image &screen) {
-    if (Moved()) {
-        screen.FreeSquare(old_coords.x, old_coords.y, size.width, size.height);
-        old_coords = coords;
+void Player::Draw(Render &screen) {
+    if (isMoved()) {
+        screen.FreeSquare(oldCoords, sprite->GetSize());
+        oldCoords = currCoords;
     }
-    screen.DrawSquare(coords.x, coords.y, size.width, size.height, color);
+    if (sprite) {
+        screen.DrawSpriteSquare(currCoords, *sprite);
+    } else {
+        screen.DrawSquare(currCoords, size, {255, 255, 255, 255});
+    }
 }
-Size Player::getSize() const { return size; }
