@@ -1,36 +1,41 @@
 #ifndef MAIN_RENDER_H
 #define MAIN_RENDER_H
 
-#include "primitive.h"
-#include "Level.h"
-#include "Sprite.h"
 #include <string>
 
-constexpr int TILE_SIZE = 24;  //кратно 2
+#include "config.h"
+#include "primitive.h"
+#include "Sprite.h"
+#include "GameObject.h"
+#include "Level.h"
 
 class Render {
 public:
     explicit Render(const std::string &a_path);
 
-    explicit Render(const Level &level);
+    explicit Render(const Sprite &sprite);
 
-    explicit Render(const Sprite &image);
+    Render(const Pixel &backgroundColor, const Size &size, int a_channels = 4);
 
-    Render(const Pixel &backgroundColor, const Size &size, int a_channels);
+    ~Render();
+
+    void DrawStatic();
+
+    void AddLayer(const Sprite &sprite, const Point &leftBottom);
+
+    Sprite *GetDynamicImage() const;
+
+    Sprite *GetSourceImage() const;
 
     Size GetSizeOfRender() const;
 
     int GetChannels() const;
 
-    Sprite *DynamicImage() const;
-
-    Sprite *SourceImage() const;
-
-    bool IsValidPixel(const Point &p) const;
-
     Pixel GetDynamicPixel(const Point &p) const;
 
     Pixel GetSourcePixel(const Point &p) const;
+
+    bool IsValidPixel(const Point &p) const;
 
     bool PutPixel(const Point &p, const Pixel &pix);
 
@@ -38,15 +43,16 @@ public:
 
     void DrawSquare(const Point &p, const Size &size, const Pixel &color);
 
-    void DrawSpriteSquare(const Point &p, const Sprite &sprite);
+    void DrawSprite(const Point &p, const Sprite &sprite);
+
+    void DrawObject(const GameObject &obj);
 
     void FreeSquare(const Point &p, const Size &size);
 
-    ~Render();
 
 private:
     Sprite *dynamicImage;
-    Sprite *sourceImage;
+    Sprite *staticImage;
     Size sizeOfRendering{};
     int channels{};
 };

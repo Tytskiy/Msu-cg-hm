@@ -1,38 +1,40 @@
-#include <iostream>
 #include "Level.h"
 
-Level::Level() = default;
+Level::Level(const std::string &levelPath, const Size &numTiles, const int tileSize) :
+        sizeOfLevel{tileSize * numTiles.width, tileSize * numTiles.height} {
 
-Level::Level(const std::string &spritePath, const Size &numTiles, const Point &p) : startDraw(p) {
+    std::ifstream tmp(levelPath);
+    std::string level((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
+    level.erase(std::remove(level.begin(), level.end(), '\n'), level.end());
 
-    tileSprite = new Sprite(spritePath);
-    auto tileS = tileSprite->GetSize();
-    sizeOfLevel = {tileS.width * numTiles.width, tileS.height * numTiles.height};
-    std::cout << sizeOfLevel.width << " " << sizeOfLevel.height << std::endl;
-    auto tmp_pixels = new Pixel[sizeOfLevel.width * sizeOfLevel.height];
-    for (int i = 0; i < sizeOfLevel.width; i++) {
-        for (int j = 0; j < sizeOfLevel.height; j++) {
-            auto tmp = tileSprite->GetImage()[tileS.width * (j % tileS.height) + i % tileS.width];
-            tmp_pixels[sizeOfLevel.width * j + i] = tmp;
+    auto tmpPixels = new Pixel[sizeOfLevel.width * sizeOfLevel.height];
+
+    //ЕЩЕ НЕДОДЕЛАЛ
+    for (int i = sizeOfLevel.height - 1; i >= 0; i--) {
+        for (int j = 0; j < sizeOfLevel.width; j++) {
+            char currChar = level[numTiles.width * ((sizeOfLevel.height - 1 - i) / tileSize) + j / tileSize];
+            if (currChar == '@') {
+                playerPos = {j - TILE_SIZE / 2, i - TILE_SIZE / 2};//последний раз сюда попадаю в правом нижнем углу
+            } else if (currChar == '%') {
+                //dynamicObjects.push_back(GameObject(levelSprites[currChar],))
+            } else {
+                auto currSprite = levelSprites[currChar];
+                tmpPixels[sizeOfLevel.width * i + j] = currSprite({j % tileSize, i % tileSize});
+            }
         }
     }
-    mainSprite = new Sprite(tmp_pixels, sizeOfLevel);
-    delete[] tmp_pixels;
+    staticObjects = new Sprite(tmpPixels, sizeOfLevel);
+    delete[] tmpPixels;
 }
 
-
-Sprite *Level::GetMainSprite() const {
-    return mainSprite;
+Level::~Level() {
+    delete staticObjects;
 }
 
-Sprite *Level::GetTileSprite() const {
-    return tileSprite;
+Sprite &Level::GetStaticObjects() const {
+    return *staticObjects;
 }
 
-Size Level::GetSizeOfLevel() const {
+Size Level::GetSize() const {
     return sizeOfLevel;
-}
-
-Point Level::GetStartDraw() const {
-    return startDraw;
 }

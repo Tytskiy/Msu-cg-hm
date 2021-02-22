@@ -1,15 +1,13 @@
 #include "common.h"
-#include "Render.h"
-#include "Player.h"
 #include "Game.h"
 
 #define GLFW_DLL
 
 #include <GLFW/glfw3.h>
 
-constexpr GLsizei WINDOW_WIDTH = 960, WINDOW_HEIGHT = 960;
+constexpr GLsizei WINDOW_WIDTH = 960, WINDOW_HEIGHT = 720;
 
-Game game(WINDOW_WIDTH, WINDOW_HEIGHT);
+static Game game(WINDOW_WIDTH, WINDOW_HEIGHT);
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 

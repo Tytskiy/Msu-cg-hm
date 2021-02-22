@@ -9,8 +9,10 @@
 
 #include "stb_image_write.h"
 
-Sprite::Sprite(Pixel color, Size size, int channels)
-        : size(size), channels(channels), isStbBuffer(false) {
+Sprite::Sprite() = default;;
+
+
+Sprite::Sprite(Pixel color, Size size, int channels) : size(size), channels(channels), isStbBuffer(false) {
     image = new Pixel[size.width * size.height];
     FillArray(image, size.width * size.height, color);
 }
@@ -39,8 +41,28 @@ Sprite::~Sprite() {
     }
 }
 
-Pixel *Sprite::GetImage() const { return image; }
+void Sprite::SetPixel(const Point &p, Pixel pixel) {
+    image[size.width * p.y + p.x] = pixel;
+}
 
-Size Sprite::GetSize() const { return size; }
+Pixel *Sprite::GetImage() const {
+    return image;
+}
 
-int Sprite::GetChannels() const { return channels; }
+
+Size Sprite::GetSize() const {
+    return size;
+}
+
+int Sprite::GetChannels() const {
+    return channels;
+}
+
+
+const Pixel &Sprite::operator()(const Point &p) const {
+    return image[size.width * p.y + p.x];
+}
+
+Pixel &Sprite::operator()(const Point &p) {
+    return image[size.width * p.y + p.x];
+}

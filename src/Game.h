@@ -6,6 +6,9 @@
 #include "Render.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "Level.h"
+
+static constexpr Pixel background = {200, 200, 200, 255};
 
 enum GameState {
     GAME_ACTIVE, GAME_MENU, GAME_WIN
@@ -21,23 +24,30 @@ struct InputState {
 
 class Game {
 public:
-    GameState state;
-    InputState inputState;
-    int width, height;
-
     Game(int width, int height);
 
     ~Game();
 
-    void Close();
+    static void ClearGame();
 
-    void Init() const;
+    void Restart() const;
+
+    void newLevel();
+
+    void LoadLevel(int numLevel) const;
+
+    void Init();
 
     void ProcessInput(float dt);
 
     void Update(float dt);
 
-    void Render() const;
+    static void Render();
+
+    GameState state;
+    InputState inputState;
+    Size sizeOfWindow;
+    int currLevel = 0;
 };
 
 #endif

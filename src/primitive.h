@@ -1,7 +1,7 @@
 #ifndef MAIN_PRIMITIVE_H
 #define MAIN_PRIMITIVE_H
 
-#include <stdint.h>
+#include <cstdint>
 
 enum class MovementDir {
     UP, DOWN, LEFT, RIGHT
