@@ -28,21 +28,21 @@ public:
 
     ~Game();
 
-    static void ClearGame();
+    static void clearGame();
 
-    void Restart() const;
+    void restart() const;
 
     void newLevel();
 
-    void LoadLevel(int numLevel) const;
+    void loadLevel(int numLevel) const;
 
-    void Init();
+    void init();
 
-    void ProcessInput(float dt);
+    void processInput(float dt);
 
-    void Update(float dt);
+    void update(float dt);
 
-    static void Render();
+    static void rendering();
 
     GameState state;
     InputState inputState;

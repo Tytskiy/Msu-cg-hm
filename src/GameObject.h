@@ -23,19 +23,19 @@ public:
         sprite = new Sprite(path);
     }
 
-    Sprite &GetSprite() const {
+    Sprite &getSprite() const {
         return *sprite;
     }
 
-    Size GetSize() const {
+    Size getSize() const {
         return size;
     }
 
-    Point GetPosition() const {
+    Point getPosition() const {
         return position;
     }
 
-    void SetPosition(const Point &pos) {
+    void setPosition(const Point &pos) {
         position = pos;
     }
 

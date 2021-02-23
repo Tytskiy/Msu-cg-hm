@@ -107,7 +107,7 @@ USAGE:
    data, set the global variable 'stbi_write_tga_with_rle' to 0.
 
    JPEG does ignore alpha channels in input data; quality is between 1 and 100.
-   Higher quality looks better but results in a bigger render.
+   Higher quality looks better but results in a bigger rendering.
    JPEG baseline (no JPEG progressive).
 
 CREDITS:

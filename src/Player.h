@@ -19,7 +19,7 @@ public:
             : GameObject(path, pos, size, vel, is_static) {
     };
 
-    void Move(MovementDir dir, float dt);
+    void move(MovementDir dir, float dt);
 };
 
 #endif  // MAIN_PLAYER_H

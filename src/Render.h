@@ -19,35 +19,35 @@ public:
 
     ~Render();
 
-    void DrawStatic();
+    void drawStatic();
 
-    void AddLayer(const Sprite &sprite, const Point &leftBottom);
+    void addLayer(const Sprite &sprite, const Point &topLeft);
 
-    Sprite *GetDynamicImage() const;
+    Sprite *getDynamicImage() const;
 
-    Sprite *GetSourceImage() const;
+    Sprite *getSourceImage() const;
 
-    Size GetSizeOfRender() const;
+    Size getSizeOfRender() const;
 
-    int GetChannels() const;
+    int getChannels() const;
 
-    Pixel GetDynamicPixel(const Point &p) const;
+    Pixel getDynamicPixel(const Point &p) const;
 
-    Pixel GetSourcePixel(const Point &p) const;
+    Pixel getSourcePixel(const Point &p) const;
 
-    bool IsValidPixel(const Point &p) const;
+    bool isValidPixel(const Point &p) const;
 
-    bool PutPixel(const Point &p, const Pixel &pix);
+    bool putPixel(const Point &p, const Pixel &pix);
 
-    bool PutSourcePixel(const Point &p);
+    bool putSourcePixel(const Point &p);
 
-    void DrawSquare(const Point &p, const Size &size, const Pixel &color);
+    void drawSquare(const Point &p, const Size &size, const Pixel &color);
 
-    void DrawSprite(const Point &p, const Sprite &sprite);
+    void drawSprite(const Point &p, const Sprite &sprite);
 
-    void DrawObject(const GameObject &obj);
+    void drawObject(const GameObject &obj);
 
-    void FreeSquare(const Point &p, const Size &size);
+    void freeSquare(const Point &p, const Size &size);
 
 
 private:

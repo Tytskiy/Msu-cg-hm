@@ -34,20 +34,24 @@ static std::map<char, Sprite> levelSprites = {
 
 class Level {
 public:
-    Level(const std::string &levelPath, const Size &numTiles, const int tileSize = 24);
+    Level(const std::string &levelPath, const Size &numTiles);
 
     ~Level();
 
-    Sprite &GetStaticObjects() const;
+    Sprite &getStaticObjects() const;
 
-    Size GetSize() const;
+    Size getSize() const;
 
+    void setTile(const Sprite &sprite, const Point &topLeft);
+
+    const Point getPlayerPosition() const;
 
 private:
     Sprite *staticObjects;
+    std::vector<GameObject> dynamicObjects;
+    bool *colisionMap;
     Size sizeOfLevel;
     Point playerPos;
-    std::vector<GameObject> dynamicObjects;
 };
 
 #endif //MAIN_LEVEL_H

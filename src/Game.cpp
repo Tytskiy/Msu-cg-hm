@@ -12,63 +12,68 @@ Game::Game(int width, int height) : state(GAME_ACTIVE), sizeOfWindow({width, hei
 }
 
 Game::~Game() {
-    ClearGame();
+    clearGame();
 }
 
-void Game::ClearGame() {
+void Game::clearGame() {
     delete render;
     delete player;
     delete level;
 }
 
-void Game::Init() {
+void Game::init() {
     currLevel = 0;
-    LoadLevel(currLevel);
+    loadLevel(currLevel);
 }
 
-void Game::Restart() const {
-    ClearGame();
-    LoadLevel(currLevel);
+void Game::restart() const {
+    clearGame();
+    loadLevel(currLevel);
 }
 
 void Game::newLevel() {
-    ClearGame();
+    clearGame();
     currLevel += 1;
-    LoadLevel(currLevel);
+    loadLevel(currLevel);
 }
 
 
-void Game::LoadLevel(int numLevel) const {
+void Game::loadLevel(int numLevel) const {
     level = new Level(levelPath[numLevel], {40, 8});
     render = new class Render(background, sizeOfWindow);
-    Point posOfGame = {(sizeOfWindow.width - level->GetSize().width) / 2,
-                       (sizeOfWindow.height - level->GetSize().height) / 2};
-    render->AddLayer(level->GetStaticObjects(), posOfGame);
-    player = new Player("../resources/doomguy.png", {0, 0}, {32, 32});
+    Point posOfGame = {(sizeOfWindow.width - level->getSize().width) / 2,
+                       (sizeOfWindow.height - level->getSize().height) / 2};
+    render->addLayer(level->getStaticObjects(), posOfGame);
+    auto tmp = Point{level->getPlayerPosition().x + posOfGame.x, level->getPlayerPosition().y + posOfGame.y};
+    player = new Player("../resources/doomguy.png", tmp, {32, 32});
 }
 
-void Game::Update(float dt) {
+void Game::update(float dt) {
 }
 
-void Game::ProcessInput(float dt) {
+void Game::processInput(float dt) {
     if (state == GAME_ACTIVE) {
-        if (inputState.keys[GLFW_KEY_W] and player->GetPosition().y +
-                                            player->GetSize().height < sizeOfWindow.height - PADDING)
-            player->Move(MovementDir::UP, dt);
-        else if (inputState.keys[GLFW_KEY_S] and player->GetPosition().y > PADDING)
-            player->Move(MovementDir::DOWN, dt);
-        if (inputState.keys[GLFW_KEY_A] and player->GetPosition().x > PADDING)
-            player->Move(MovementDir::LEFT, dt);
+        if (inputState.keys[GLFW_KEY_W] and player->getPosition().y +
+                                            player->getSize().height < sizeOfWindow.height - PADDING)
+            player->move(MovementDir::DOWN, dt);
+        else if (inputState.keys[GLFW_KEY_S] and player->getPosition().y > PADDING)
+            player->move(MovementDir::UP, dt);
+        if (inputState.keys[GLFW_KEY_A] and player->getPosition().x > PADDING)
+            player->move(MovementDir::LEFT, dt);
         else if (inputState.keys[GLFW_KEY_D] and
-                 player->GetPosition().x + player->GetSize().width < sizeOfWindow.width - PADDING)
-            player->Move(MovementDir::RIGHT, dt);
+                 player->getPosition().x + player->getSize().width < sizeOfWindow.width - PADDING)
+            player->move(MovementDir::RIGHT, dt);
     }
 }
 
-void Game::Render() {
-    render->DrawStatic();
-    render->DrawObject(*player);
-    auto w = render->GetSizeOfRender().width;
-    auto h = render->GetSizeOfRender().height;
-    glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, render->GetDynamicImage()->GetImage());
+void Game::rendering() {
+    render->drawStatic();
+    render->drawObject(*player);
+    auto w = render->getSizeOfRender().width;
+    auto h = render->getSizeOfRender().height;
+
+    //чтобы рисовалось сверху-вниз
+    glRasterPos2f(-1, 1);
+    glPixelZoom(1, -1);
+    glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, render->getDynamicImage()->getImage());
 }

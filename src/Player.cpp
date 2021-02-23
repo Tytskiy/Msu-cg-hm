@@ -1,7 +1,7 @@
 #include "Player.h"
 #include <iostream>
 
-void Player::Move(MovementDir dir, float dt) {
+void Player::move(MovementDir dir, float dt) {
     switch (dir) {
         case MovementDir::UP:
             position.y += dt * velocity;

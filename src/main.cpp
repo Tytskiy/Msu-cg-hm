@@ -108,15 +108,15 @@ int main(int argc, char **argv) {
     GLenum gl_error = glGetError();
     while (gl_error != GL_NO_ERROR) gl_error = glGetError();
 
-    // Render img("../resources/tex.png");
-    // Render screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
+    // rendering img("../resources/tex.png");
+    // rendering screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     GL_CHECK_ERRORS;
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     GL_CHECK_ERRORS;
 
-    game.Init();
+    game.init();
 
     while (!glfwWindowShouldClose(window)) {
         GLfloat currentFrame = glfwGetTime();
@@ -125,15 +125,15 @@ int main(int argc, char **argv) {
         glfwPollEvents();
 
         // Обрабатываем пользовательский ввод с клавиатуры
-        game.ProcessInput(deltaTime);
+        game.processInput(deltaTime);
 
         // Обновляем состояние игры
-        game.Update(deltaTime);
+        game.update(deltaTime);
 
         // Рендер
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        game.Render();
+        game.rendering();
 
         glfwSwapBuffers(window);
     }

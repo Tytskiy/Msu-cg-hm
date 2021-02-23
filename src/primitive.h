@@ -15,6 +15,7 @@ struct Size {
 struct Point {
     int x;
     int y;
+
 };
 
 struct Pixel {

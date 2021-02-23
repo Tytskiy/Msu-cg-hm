@@ -18,17 +18,17 @@ struct Sprite {
 
     ~Sprite();
 
-    void SetPixel(const Point &p, Pixel pixel);
+    void setPixel(const Point &p, Pixel pixel);
 
-    Pixel *GetImage() const;
+    Pixel *getImage() const;
 
     const Pixel &operator()(const Point &p) const;
 
     Pixel &operator()(const Point &p);
 
-    Size GetSize() const;
+    Size getSize() const;
 
-    int GetChannels() const;
+    int getChannels() const;
 
 private:
     Pixel *image;
