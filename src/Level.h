@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <vector>
+#include <list>
 #include <algorithm>
 #include <map>
 
@@ -12,16 +12,6 @@
 #include "primitive.h"
 #include "Sprite.h"
 #include "GameObject.h"
-
-/*
-Базовый набор:
-пустое пространство: ‘ ‘ (пробел)
-стена: ‘#’
-пол: ‘.’
-игрок: ‘@’
-выход с уровня: ‘x’
-стены, которые игрок может разрушить: ‘%’6
- */
 
 static std::map<char, Sprite> levelSprites = {
         {' ', Sprite("../resources/lava.png")},
@@ -38,19 +28,30 @@ public:
 
     ~Level();
 
+    bool *getCollisionMap() const;
+
     Sprite &getStaticObjects() const;
+
+    std::list<GameObject *> &getDO();
 
     Size getSize() const;
 
     void setTile(const Sprite &sprite, const Point &topLeft);
 
-    const Point getPlayerPosition() const;
+    void setCollision(const Point &topLeft);
+
+    const Point &getPlayerPosition() const;
+
+    const Point &getLevelPosition() const;
+
+    void setLevelPosition(const Point &p);
 
 private:
     Sprite *staticObjects;
-    std::vector<GameObject> dynamicObjects;
-    bool *colisionMap;
+    std::list<GameObject *> dynamicObjects;
+    bool *collisionMap;
     Size sizeOfLevel;
+    Point levelPos;
     Point playerPos;
 };
 

@@ -13,8 +13,8 @@ set(SOURCE_FILES
         src/Level.cpp
         src/Render.cpp
         src/Sprite.cpp
-        src/Player.cpp
-        src/main.cpp)
+        src/main.cpp
+        src/GameObject.cpp)
 
 set(ADDITIONAL_INCLUDE_DIRS
         dependencies/include/GLAD)

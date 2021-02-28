@@ -6,7 +6,6 @@
 #include "config.h"
 #include "primitive.h"
 #include "Sprite.h"
-#include "GameObject.h"
 #include "Level.h"
 
 class Render {
@@ -43,7 +42,7 @@ public:
 
     void drawSquare(const Point &p, const Size &size, const Pixel &color);
 
-    void drawSprite(const Point &p, const Sprite &sprite);
+    void drawSprite(const Sprite &sprite, const Point &p);
 
     void drawObject(const GameObject &obj);
 

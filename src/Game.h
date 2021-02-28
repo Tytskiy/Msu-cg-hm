@@ -5,7 +5,6 @@
 
 #include "Render.h"
 #include "GameObject.h"
-#include "Player.h"
 #include "Level.h"
 
 static constexpr Pixel background = {200, 200, 200, 255};
@@ -28,13 +27,18 @@ public:
 
     ~Game();
 
-    static void clearGame();
+    void clearGame();
 
-    void restart() const;
+    void restart();
 
     void newLevel();
 
-    void loadLevel(int numLevel) const;
+    void loadLevel(int numLevel);
+
+    static Directions
+    staticCollision(const GameObject &gm, const bool *collisionMap, const Size &sizeOfMap, int len = 3);
+
+    Directions dynamicCollision(const GameObject &gm);
 
     void init();
 
@@ -42,12 +46,19 @@ public:
 
     void update(float dt);
 
-    static void rendering();
+    void rendering() const;
 
     GameState state;
     InputState inputState;
     Size sizeOfWindow;
     int currLevel = 0;
+
+    //std::list<GameObject *> *dynamicObjects;
+    bool *collisionMap = nullptr;
+    Render *render = nullptr;
+    Player *player = nullptr;
+    Level *level = nullptr;
+    Point posOfLevel;
 };
 
 #endif

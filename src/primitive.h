@@ -6,6 +6,12 @@
 enum class MovementDir {
     UP, DOWN, LEFT, RIGHT
 };
+struct Directions {
+    bool left = true;
+    bool right = true;
+    bool top = true;
+    bool bottom = true;
+};
 
 struct Size {
     int width;
@@ -16,6 +22,13 @@ struct Point {
     int x;
     int y;
 
+    Point operator+(const Point &p) const {
+        return Point{x + p.x, y + p.y};
+    }
+
+    Point operator-(const Point &p) const {
+        return Point{x - p.x, y - p.y};
+    }
 };
 
 struct Pixel {

@@ -21,7 +21,7 @@ Render::Render(const Sprite &sprite) {
 }
 
 void Render::drawStatic() {
-    drawSprite({0, 0}, *staticImage);
+    drawSprite(*staticImage, {0, 0});
 }
 
 void Render::addLayer(const Sprite &sprite, const Point &topLeft) {
@@ -88,9 +88,8 @@ void Render::freeSquare(const Point &p, const Size &size) {
     }
 }
 
-void Render::drawSprite(const Point &p, const Sprite &sprite) {
+void Render::drawSprite(const Sprite &sprite, const Point &p) {
     Size s = sprite.getSize();
-    //std::cout << s.width << " " << s.height << std::endl;
     auto tmpImage = sprite.getImage();
     for (int i = 0; i < s.height; ++i) {
         for (int j = 0; j < s.width; ++j) {
@@ -102,7 +101,7 @@ void Render::drawSprite(const Point &p, const Sprite &sprite) {
 }
 
 void Render::drawObject(const GameObject &obj) {
-    drawSprite(obj.getPosition(), obj.getSprite());
+    drawSprite(obj.getSprite(), obj.getPosition());
 }
 
 Render::~Render() {

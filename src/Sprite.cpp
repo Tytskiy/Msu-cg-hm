@@ -27,10 +27,9 @@ Sprite::Sprite(const std::string &a_path) : size() {
     }
 }
 
-Sprite::Sprite(const Sprite &sprite) : size() {
-    size = sprite.size;
+Sprite::Sprite(const Sprite &sprite) : size(sprite.size), channels(sprite.channels) {
     image = copyFromPointer(sprite.image, size.width * size.height);
-    channels = sprite.channels;
+
 }
 
 Sprite::~Sprite() {

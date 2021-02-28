@@ -5,7 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
-constexpr GLsizei WINDOW_WIDTH = 960, WINDOW_HEIGHT = 720;
+constexpr GLsizei WINDOW_WIDTH = 1024, WINDOW_HEIGHT = 960;
 
 static Game game(WINDOW_WIDTH, WINDOW_HEIGHT);
 GLfloat deltaTime = 0.0f;
@@ -133,6 +133,10 @@ int main(int argc, char **argv) {
         // Рендер
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glRasterPos2f(-1, 1);
+        glPixelZoom(1, -1);
+
         game.rendering();
 
         glfwSwapBuffers(window);
