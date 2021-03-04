@@ -36,5 +36,15 @@ struct Pixel {
     uint8_t g;
     uint8_t b;
     uint8_t a;
+
+    Pixel operator+(const Pixel &p) const {
+        return Pixel{(uint8_t) (r + p.r), (uint8_t) (g + p.g), (uint8_t) (b + p.b), (uint8_t) (a + p.a)};
+    }
+
+    Pixel operator*(float alpha) const {
+        return Pixel{(uint8_t) (alpha * r), (uint8_t) (alpha * g), (uint8_t) (alpha * b), a};
+    }
+
 };
+
 #endif //MAIN_PRIMITIVE_H

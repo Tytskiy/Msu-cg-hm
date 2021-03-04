@@ -2,16 +2,14 @@
 #define MAIN_GAME_H
 
 #include <GLFW/glfw3.h>
-
+#include "utils.h"
 #include "Render.h"
 #include "GameObject.h"
 #include "Level.h"
 
 static constexpr Pixel background = {200, 200, 200, 255};
 
-enum GameState {
-    GAME_ACTIVE, GAME_MENU, GAME_WIN
-};
+enum GameState {GAME_ACTIVE, GAME_LOAD, GAME_NEW_LEVEL, GAME_LOSE, GAME_WIN};
 
 struct InputState {
     bool keys[1024]{};
@@ -46,19 +44,19 @@ public:
 
     void update(float dt);
 
-    void rendering() const;
+    void rendering(float dt);
 
     GameState state;
     InputState inputState;
     Size sizeOfWindow;
-    int currLevel = 0;
-
-    //std::list<GameObject *> *dynamicObjects;
-    bool *collisionMap = nullptr;
+    GLFWwindow *window;
     Render *render = nullptr;
     Player *player = nullptr;
     Level *level = nullptr;
     Point posOfLevel;
+    bool *collisionMap = nullptr;
+    int currLevel = 0;
+    float globalTime = 0;
 };
 
 #endif

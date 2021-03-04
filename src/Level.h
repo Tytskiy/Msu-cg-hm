@@ -19,7 +19,8 @@ static std::map<char, Sprite> levelSprites = {
         {'.', Sprite("../resources/floor.png")},
         {'x', Sprite("../resources/finish.png")},
         {'%', Sprite("../resources/destruct_wall.png")},
-        {'@', Sprite()}
+        {'D', Sprite("../resources/door_1.png")},
+        {'@', Sprite("../resources/doomguy.png")}
 };
 
 class Level {

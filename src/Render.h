@@ -48,6 +48,9 @@ public:
 
     void freeSquare(const Point &p, const Size &size);
 
+    void dimming(float brightness);
+
+    void blur(int power);
 
 private:
     Sprite *dynamicImage;

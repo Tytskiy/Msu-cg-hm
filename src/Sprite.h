@@ -2,7 +2,7 @@
 #define MAIN_SPRITE_H
 
 #include <string>
-
+#include "utils.h"
 #include "primitive.h"
 
 struct Sprite {
@@ -13,6 +13,8 @@ struct Sprite {
     explicit Sprite(const Pixel *pixels, Size size, int channel = 4);
 
     explicit Sprite(const std::string &a_path);
+
+    Sprite &operator=(const Sprite &other);
 
     Sprite(const Sprite &sprite);
 
@@ -31,7 +33,7 @@ struct Sprite {
     int getChannels() const;
 
 private:
-    Pixel *image;
+    Pixel *image = nullptr;
     Size size;
     int channels{};
     bool isStbBuffer{};

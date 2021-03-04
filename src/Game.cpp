@@ -2,9 +2,9 @@
 #include <list>
 #include "Game.h"
 
-static std::string levelPath[2] = {"../levels/level_1", "../levels/level_1"};
+static std::string levelPath[2] = {"../levels/level_1", "../levels/level_2"};
 
-Game::Game(int width, int height) : state(GAME_ACTIVE), sizeOfWindow({width, height}), currLevel(0) {
+Game::Game(int width, int height) : state(GAME_LOAD), sizeOfWindow({width, height}), currLevel(0) {
 }
 
 Game::~Game() {
@@ -25,17 +25,24 @@ void Game::init() {
 
 void Game::restart() {
     clearGame();
+    std::cout << "RESTART" << std::endl;
     loadLevel(currLevel);
 }
 
 void Game::newLevel() {
-    clearGame();
     currLevel += 1;
-    loadLevel(currLevel);
+    if (currLevel < 2) {
+        clearGame();
+        std::cout << "NEW" << std::endl;
+        loadLevel(currLevel);
+    } else {
+        std::cout << "WIN" << std::endl;
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
 }
 
 void Game::loadLevel(int numLevel) {
-    level = new Level(levelPath[numLevel], {40, 8});
+    level = new Level(levelPath[numLevel], {40, 40});
     render = new Render(background, sizeOfWindow);
 
     posOfLevel = {(sizeOfWindow.width - level->getSize().width) / 2,
@@ -44,7 +51,7 @@ void Game::loadLevel(int numLevel) {
     render->addLayer(level->getStaticObjects(), posOfLevel);
 
     auto tmp = Point{level->getPlayerPosition().x + posOfLevel.x, level->getPlayerPosition().y + posOfLevel.y};
-    player = new Player("../resources/doomguy.png", tmp, {24, 24}, 130);
+    player = new Player(tmp, {24, 24}, 130);
 
     collisionMap = new bool[sizeOfWindow.width * sizeOfWindow.height]{false};
     fillMatrix(collisionMap, sizeOfWindow.width, level->getCollisionMap(), level->getSize().width,
@@ -79,55 +86,109 @@ Directions Game::dynamicCollision(const GameObject &gm) {
     Directions dir{};
     for (auto &c:level->getDO()) {
         Directions tmp{};
-        GameObject::doCollision(gm, *c, tmp, 3);
-        //if (!c.getIsStatic()) {
-        dir.left &= tmp.left;
-        dir.right &= tmp.right;
-        dir.top &= tmp.top;
-        dir.bottom &= tmp.bottom;
-        // }
+        GameObject::doCollision(gm, *c, tmp, 4);
+        if (c->getIsStatic()) {
+            dir.left &= tmp.left;
+            dir.right &= tmp.right;
+            dir.top &= tmp.top;
+            dir.bottom &= tmp.bottom;
+        }
     }
     return dir;
 }
 
 
 void Game::update(float dt) {
-    std::cout << level->getDO().size() << std::endl;
+    globalTime += dt;
+    if (state != GAME_ACTIVE) return;
+
     for (auto iter = level->getDO().begin(); iter != level->getDO().end(); iter++) {
-        bool stop = (*iter)->triggered(*this);
-        if (stop) return;
+        (*iter)->triggered(*this);
         if ((*iter)->isDeleted()) {
             iter = level->getDO().erase(iter);
         }
     }
+    for (auto &c:level->getDO()) {
+        c->animation(*this);
+    }
+    player->animation(*this);
 }
 
 
 void Game::processInput(float dt) {
-    auto staticDir = staticCollision(*player, collisionMap, sizeOfWindow);
+    if (state != GAME_ACTIVE) return;
+
+    auto staticDir = staticCollision(*player, collisionMap, sizeOfWindow, 4);
     auto dynamicDir = dynamicCollision(*player);
 
-    if (state == GAME_ACTIVE) {
-        if (inputState.keys[GLFW_KEY_W] and staticDir.top and dynamicDir.top)
-            player->move(MovementDir::UP, dt);
-        else if (inputState.keys[GLFW_KEY_S] and staticDir.bottom and dynamicDir.bottom)
-            player->move(MovementDir::DOWN, dt);
-        if (inputState.keys[GLFW_KEY_A] and staticDir.left and dynamicDir.left)
-            player->move(MovementDir::LEFT, dt);
-        else if (inputState.keys[GLFW_KEY_D] and staticDir.right and dynamicDir.right)
-            player->move(MovementDir::RIGHT, dt);
-    }
+    if (inputState.keys[GLFW_KEY_W] and staticDir.top and dynamicDir.top)
+        player->move(MovementDir::UP, dt);
+    else if (inputState.keys[GLFW_KEY_S] and staticDir.bottom and dynamicDir.bottom)
+        player->move(MovementDir::DOWN, dt);
+    if (inputState.keys[GLFW_KEY_A] and staticDir.left and dynamicDir.left)
+        player->move(MovementDir::LEFT, dt);
+    else if (inputState.keys[GLFW_KEY_D] and staticDir.right and dynamicDir.right)
+        player->move(MovementDir::RIGHT, dt);
+
 }
 
-void Game::rendering() const {
+void Game::rendering(float dt) {
+    float loadSpeed = 1;
+    static float time = 0;
+
     render->drawStatic();
 
     for (auto &c:level->getDO()) {
         render->drawObject(*c);
     }
-
     render->drawObject(*player);
 
+    if (state == GAME_LOAD) {
+        if (time <= loadSpeed) {
+            render->dimming(time / loadSpeed);
+            time += dt;
+        } else {
+            time = 0;
+            state = GAME_ACTIVE;
+        }
+    }
+    if (state == GAME_NEW_LEVEL || state == GAME_LOSE || state == GAME_WIN) {
+
+        if (time <= loadSpeed) {
+            if (state == GAME_LOSE) {
+                render->blur((time / loadSpeed) * 9);
+            } else {
+                render->dimming(1 - (time / loadSpeed));
+            }
+            time += dt;
+        } else {
+            time = 0;
+            if (state == GAME_LOSE) {
+                restart();
+            } else {
+                newLevel();
+            }
+            state = GAME_LOAD;
+            if (state == GAME_LOSE) {
+                render->blur(5);
+            } else {
+                render->dimming(0);
+            }
+        }
+    }
+    if (state == GAME_NEW_LEVEL) {
+        auto tmp = Sprite("../resources/level_up.png");
+        Point pos = {(sizeOfWindow.width - tmp.getSize().width) / 2, (sizeOfWindow.height - tmp.getSize().height) / 2};
+        render->drawSprite(tmp, pos);
+    } else if (state == GAME_LOSE) {
+        auto tmp = Sprite("../resources/you_lose.png");
+        Point pos = {(sizeOfWindow.width - tmp.getSize().width) / 2, (sizeOfWindow.height - tmp.getSize().height) / 2};
+        render->drawSprite(tmp, pos);
+    } else if (state == GAME_WIN) {
+        auto tmp = Sprite("../resources/end_game.png");
+        Point pos = {(sizeOfWindow.width - tmp.getSize().width) / 2, (sizeOfWindow.height - tmp.getSize().height) / 2};
+        render->drawSprite(tmp, pos);
+    }
     auto w = render->getSizeOfRender().width;
     auto h = render->getSizeOfRender().height;
 

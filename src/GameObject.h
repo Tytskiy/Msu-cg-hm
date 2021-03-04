@@ -1,9 +1,10 @@
 #ifndef MAIN_OBJECT_H
 #define MAIN_OBJECT_H
 
+#include <vector>
+#include <string>
 #include "config.h"
 #include "primitive.h"
-#include "utils.h"
 #include "Sprite.h"
 
 class Game;
@@ -12,11 +13,15 @@ class GameObject {
 public:
     explicit GameObject(const Sprite &spr, const Point &pos = {0, 0},
                         const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0, bool trig = false,
-                        bool isStatic = true);
+                        bool isCollision = true);
 
     explicit GameObject(const std::string &path, const Point &pos = {0, 0},
                         const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0, bool trig = false,
-                        bool isStatic = true);
+                        bool isCollision = true);
+
+    explicit GameObject(const std::vector<std::string> &paths, const Point &pos = {0, 0},
+                        const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0, bool trig = false,
+                        bool isCollision = true, float speedAnim = 0.2);
 
     GameObject(const GameObject &gm);
 
@@ -26,9 +31,11 @@ public:
 
     virtual bool triggered(Game &game);
 
+    virtual void animation(Game &game);
+
     bool getTriggered() const;
 
-    bool setTriggered(bool trig);
+    void setTriggered(bool trig);
 
     Sprite &getSprite() const;
 
@@ -46,63 +53,83 @@ public:
 
     bool isDeleted() const;
 
+
 protected:
     Sprite *sprite = nullptr;
     Size size;
     Point position;
     int velocity;
     bool isTriggered;
-    bool isStatic;
+    bool isCollision;
+    bool isAnimation;
     bool deleted = false;
+    float speedAnim = 0.2;
+    int numSprites = 1;
+    float time = 0;
+    int currSprite = 0;
 };
 
 class Player : public GameObject {
 public:
-    explicit Player(const Sprite &spr, const Point &pos = {0, 0},
-                    const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false, bool isStatic = false);
-
-    explicit Player(const std::string &path, const Point &pos = {0, 0},
-                    const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false, bool isStatic = false);
+    explicit Player(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 150,
+                    bool trig = false, bool isCollision = false);
 
     void move(MovementDir dir, float dt);
+
+    void animation(Game &game);
 };
 
 class DestructObject : public GameObject {
 public:
-    explicit DestructObject(const Sprite &spr, const Point &pos = {0, 0},
-                            const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false,
-                            bool isStatic = false);
+    explicit DestructObject(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
+                            bool trig = false, bool isCollision = true);
 
-    explicit DestructObject(const std::string &path, const Point &pos = {0, 0},
-                            const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false,
-                            bool isStatic = false);
 
     bool triggered(Game &game) override;
+
+    //void animation(Game &game) override;
 };
 
-class FinishObject : public GameObject {
+class Flag : public GameObject {
 public:
-    explicit FinishObject(const Sprite &spr, const Point &pos = {0, 0},
-                          const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false,
-                          bool isStatic = false);
+    explicit Flag(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
+                  bool trig = false, bool isCollision = false);
 
-    explicit FinishObject(const std::string &path, const Point &pos = {0, 0},
-                          const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false,
-                          bool isStatic = false);
 
     bool triggered(Game &game) override;
+
+    //void animation(Game &game) override;
 };
 
 class Trap : public GameObject {
 public:
-    explicit Trap(const Sprite &spr, const Point &pos = {0, 0},
-                  const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false, bool isStatic = false);
-
-    explicit Trap(const std::string &path, const Point &pos = {0, 0},
-                  const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 200, bool trig = false, bool isStatic = false);
+    explicit Trap(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
+                  bool trig = false, bool isCollision = false);
 
     bool triggered(Game &game) override;
+    // void animation(Game &game) override;
 };
 
+
+class Door : public GameObject {
+public:
+    explicit Door(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0, bool trig = false,
+                  bool isCollision = true);
+
+    bool triggered(Game &game) override;
+
+    void animation(Game &game) override;
+};
+
+class Spikes : public GameObject {
+public:
+    explicit Spikes(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
+                    bool trig = false,
+                    bool isCollision = true);
+
+    bool triggered(Game &game) override;
+
+    void animation(Game &game) override;
+};
 
 #endif

@@ -18,13 +18,19 @@ Level::Level(const std::string &levelPath, const Size &numTiles) :
             playerPos = currPosition;
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == '%') {
-            dynamicObjects.emplace_back(new DestructObject(currSprite, currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            dynamicObjects.emplace_back(new DestructObject(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == ' ') {
-            dynamicObjects.emplace_back(new Trap(currSprite, currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            dynamicObjects.emplace_back(new Trap(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == 'x') {
-            dynamicObjects.emplace_back(new FinishObject(currSprite, currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            dynamicObjects.emplace_back(new Flag(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            setTile(levelSprites['.'], currPosition);
+        } else if (textLevel[k] == 'D') {
+            dynamicObjects.emplace_back(new Door(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            setTile(levelSprites['.'], currPosition);
+        } else if (textLevel[k] == 'T') {
+            dynamicObjects.emplace_back(new Spikes(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == '#') {
             setTile(currSprite, currPosition);

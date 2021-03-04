@@ -2,6 +2,9 @@
 #define MAIN_UTILS_H
 
 #include <iostream>
+#include <cmath>
+#include <cstdlib>
+
 
 template<typename T>
 T *copyFromPointer(const T *p, size_t size) {
@@ -36,5 +39,6 @@ void fillMatrix(T *p, size_t width, T fill, size_t f_width, size_t f_height, int
         }
     }
 }
+
 
 #endif  // MAIN_UTILS_H

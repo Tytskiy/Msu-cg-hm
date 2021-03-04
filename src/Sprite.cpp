@@ -1,5 +1,4 @@
 #include "Sprite.h"
-#include "utils.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -9,7 +8,8 @@
 
 #include "stb_image_write.h"
 
-Sprite::Sprite() = default;;
+Sprite::Sprite() {
+}
 
 
 Sprite::Sprite(Pixel color, Size size, int channels) : size(size), channels(channels), isStbBuffer(false) {
@@ -27,9 +27,20 @@ Sprite::Sprite(const std::string &a_path) : size() {
     }
 }
 
-Sprite::Sprite(const Sprite &sprite) : size(sprite.size), channels(sprite.channels) {
+Sprite::Sprite(const Sprite &sprite) : size(sprite.size), channels(sprite.channels), isStbBuffer(false) {
     image = copyFromPointer(sprite.image, size.width * size.height);
 
+}
+
+Sprite &Sprite::operator=(const Sprite &other) {
+    if (this == &other) // not a self-assignment
+    {
+        return *this;
+    }
+    this->size = other.size;
+    this->isStbBuffer = false;
+    this->channels = other.channels;
+    image = copyFromPointer(other.image, size.width * size.height);
 }
 
 Sprite::~Sprite() {

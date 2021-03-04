@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game", nullptr, nullptr);
+    game.window = window;
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -113,7 +114,7 @@ int main(int argc, char **argv) {
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     GL_CHECK_ERRORS;
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     GL_CHECK_ERRORS;
 
     game.init();
@@ -131,13 +132,12 @@ int main(int argc, char **argv) {
         game.update(deltaTime);
 
         // Рендер
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glRasterPos2f(-1, 1);
         glPixelZoom(1, -1);
-
-        game.rendering();
+        game.rendering(deltaTime);
 
         glfwSwapBuffers(window);
     }
