@@ -226,21 +226,23 @@ void Render::blur(int power) {
             matrix[i][j] = 1.0 / (power * power);
         }
     }
-    Pixel *oldDI = copyFromPointer(dynamicImage->getImage(), sizeOfRendering.width * sizeOfRendering.height);
+    if (!blurShit)
+        blurShit = copyFromPointer(dynamicImage->getImage(), sizeOfRendering.width * sizeOfRendering.height);
+
     for (int i = 0; i < sizeOfRendering.height; i++) {
         for (int j = 0; j < sizeOfRendering.width; j++) {
             Pixel newPixel{0, 0, 0, 255};
             for (int k = -power / 2; k <= power / 2; k++) {
                 for (int g = -power / 2; g <= power / 2; g++) {
                     if (isValidPixel({j + g, i + k})) {
-                        newPixel = newPixel + oldDI[(i + k) * sizeOfRendering.width + j + g] *
+                        newPixel = newPixel + blurShit[(i + k) * sizeOfRendering.width + j + g] *
                                               matrix[k + power / 2][g + power / 2];
                     }
                 }
             }
+            blurShit[i * sizeOfRendering.width + j] = newPixel;
             dynamicImage->setPixel({j, i}, newPixel);
         }
     }
-    delete[] oldDI;
 }
 

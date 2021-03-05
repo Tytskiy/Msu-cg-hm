@@ -214,11 +214,11 @@ bool Flag::triggered(Game &game) {
 
 
 Trap::Trap(const Point &pos, const Size &size, int vel, bool trig, bool isCollision) :
-        GameObject(std::vector<std::string>{"../resources/lava_1.png", "../resources/lava_2.png"}, pos, size, vel, trig,
-                   isCollision, 1) {
-
+        GameObject(std::vector<std::string>{"../resources/lava_1.png", "../resources/lava_2.png",
+                                            "../resources/lava_3.png", "../resources/lava_4.png"}, pos, size, vel, trig,
+                   isCollision, 0.5) {
+    time = 0;
 }
-
 
 bool Trap::triggered(Game &game) {
     if (!doCollision(*game.player, *this)) return false;

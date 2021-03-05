@@ -156,7 +156,7 @@ void Game::rendering(float dt) {
 
         if (time <= loadSpeed) {
             if (state == GAME_LOSE) {
-                render->blur((time / loadSpeed) * 9);
+                render->blur(3);
             } else {
                 render->dimming(1 - (time / loadSpeed));
             }
@@ -170,7 +170,7 @@ void Game::rendering(float dt) {
             }
             state = GAME_LOAD;
             if (state == GAME_LOSE) {
-                render->blur(5);
+                delete[] render->blurShit;
             } else {
                 render->dimming(0);
             }

@@ -52,6 +52,7 @@ public:
 
     void blur(int power);
 
+    Pixel *blurShit = nullptr;//дедлайн горит, а нормально делать нет сил
 private:
     Sprite *dynamicImage;
     Sprite *staticImage;
