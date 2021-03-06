@@ -24,13 +24,16 @@ Level::Level(const std::string &levelPath, const Size &numTiles) :
             dynamicObjects.emplace_back(new Trap(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == 'x') {
-            dynamicObjects.emplace_back(new Flag(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            dynamicObjects.emplace_back(new Portal(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == 'D') {
             dynamicObjects.emplace_back(new Door(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == 'T') {
             dynamicObjects.emplace_back(new Spikes(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
+            setTile(levelSprites['.'], currPosition);
+        } else if (textLevel[k] == 'K') {
+            dynamicObjects.emplace_back(new Key(currPosition, {TILE_SIZE, TILE_SIZE}, 0));
             setTile(levelSprites['.'], currPosition);
         } else if (textLevel[k] == '#') {
             setTile(currSprite, currPosition);

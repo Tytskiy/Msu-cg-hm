@@ -77,6 +77,12 @@ public:
     void move(MovementDir dir, float dt);
 
     void animation(Game &game);
+
+    int keys = 0;
+    int health = 3;
+    float time = 0;
+    float wait = 1.5;
+    bool isPain = false;
 };
 
 class DestructObject : public GameObject {
@@ -90,15 +96,18 @@ public:
     //void animation(Game &game) override;
 };
 
-class Flag : public GameObject {
+class Portal : public GameObject {
 public:
-    explicit Flag(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
-                  bool trig = false, bool isCollision = false);
+    explicit Portal(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
+                    bool trig = false, bool isCollision = false);
 
 
     bool triggered(Game &game) override;
 
     //void animation(Game &game) override;
+
+private:
+    bool isOpen = true;
 };
 
 class Trap : public GameObject {
@@ -126,6 +135,17 @@ public:
     explicit Spikes(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
                     bool trig = false,
                     bool isCollision = true);
+
+    bool triggered(Game &game) override;
+
+    void animation(Game &game) override;
+};
+
+class Key : public GameObject {
+public:
+    explicit Key(const Point &pos = {0, 0}, const Size &size = {TILE_SIZE, TILE_SIZE}, int vel = 0,
+                 bool trig = false,
+                 bool isCollision = false);
 
     bool triggered(Game &game) override;
 

@@ -112,6 +112,10 @@ void Game::update(float dt) {
         c->animation(*this);
     }
     player->animation(*this);
+    if (globalTime - player->time > player->wait) {
+        player->time = globalTime;
+        player->isPain = false;
+    }
 }
 
 
@@ -141,6 +145,14 @@ void Game::rendering(float dt) {
     for (auto &c:level->getDO()) {
         render->drawObject(*c);
     }
+    if (player->health == 3)
+        render->drawSprite(Sprite("../resources/health_1.png"), {1000, 10});
+    else if (player->health == 2)
+        render->drawSprite(Sprite("../resources/health_2.png"), {1000, 10});
+    else if (player->health == 1)
+        render->drawSprite(Sprite("../resources/health_3.png"), {1000, 10});
+
+
     render->drawObject(*player);
 
     if (state == GAME_LOAD) {

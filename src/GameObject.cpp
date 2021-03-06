@@ -125,11 +125,16 @@ bool GameObject::isDeleted() const {
 
 Player::Player(const Point &pos, const Size &size, int vel, bool trig, bool isCollision) :
         GameObject(std::vector<std::string>{"../resources/doomguy_stay.png", "../resources/doomguy_left.png",
-                                            "../resources/doomguy_right.png"}, pos, size, vel, trig, isCollision) {
+                                            "../resources/doomguy_right.png", "../resources/doomguy_pain.png"}, pos,
+                   size, vel, trig, isCollision) {
 
 }
 
 void Player::animation(Game &game) {
+    if (isPain) {
+        currSprite = 3;
+        return;
+    }
     if (game.inputState.keys[GLFW_KEY_A])
         currSprite = 1;
     else if (game.inputState.keys[GLFW_KEY_D])
@@ -187,22 +192,24 @@ bool DestructObject::triggered(Game &game) {
     return false;
 }
 
-Flag::Flag(const Point &pos, const Size &size, int vel, bool trig, bool isCollision)
+Portal::Portal(const Point &pos, const Size &size, int vel, bool trig, bool isCollision)
         : GameObject(
-        std::vector<std::string>{"../resources/flag_1.png", "../resources/flag_2.png", "../resources/flag_3.png",
-                                 "../resources/flag_4.png"}, pos, size, vel, trig, isCollision, 0.1) {
+        std::vector<std::string>{"../resources/portal_1.png", "../resources/portal_2.png",
+                                 "../resources/portal_3.png", "../resources/portal_4.png", "../resources/portal_5.png"},
+        pos, size, vel, trig,
+        isCollision, 0.8) {
 
 }
 
-//void Flag::animation(Game &game) {
-//    if ((game.globalTime - time) < 0.1) return;
-//    currSprite = (currSprite + 1) % 4;
+//void Portal::animation(Game &game) {
+//    if ((game.globalTime - time) < speedAnim || !isAnimation) return;
+//    currSprite = (currSprite + 1) % numSprites;
 //    time = game.globalTime;
 //}
 
 
-bool Flag::triggered(Game &game) {
-    if (!doCollision(*game.player, *this)) return false;
+bool Portal::triggered(Game &game) {
+    if (!doCollision(*game.player, *this) || game.player->keys < 1) return false;
     isTriggered = true;
     if (game.currLevel == 1) {
         game.state = GAME_WIN;
@@ -223,7 +230,14 @@ Trap::Trap(const Point &pos, const Size &size, int vel, bool trig, bool isCollis
 bool Trap::triggered(Game &game) {
     if (!doCollision(*game.player, *this)) return false;
     isTriggered = true;
-    game.state = GAME_LOSE;
+    if (!game.player->isPain) {
+        game.player->health--;
+        game.player->time = game.globalTime;
+        game.player->isPain = true;
+    }
+    if (game.player->health == 0) {
+        game.state = GAME_LOSE;
+    }
     return true;
 }
 
@@ -257,7 +271,14 @@ Spikes::Spikes(const Point &pos, const Size &size, int vel, bool trig, bool isCo
 bool Spikes::triggered(Game &game) {
     if (!doCollision(*game.player, *this) || currSprite >= 2) return false;
     isTriggered = true;
-    game.state = GAME_LOSE;
+    if (!game.player->isPain) {
+        game.player->health--;
+        game.player->time = game.globalTime;
+        game.player->isPain = true;
+    }
+    if (game.player->health == 0) {
+        game.state = GAME_LOSE;
+    }
     return true;
 }
 
@@ -266,4 +287,30 @@ void Spikes::animation(Game &game) {
     if (currSprite >= 2) {
         isCollision = false;
     }
+}
+
+Key::Key(const Point &pos, const Size &size, int vel, bool trig, bool isCollision) : GameObject(
+        std::vector<std::string>{"../resources/key_1.png", "../resources/key_2.png",
+                                 "../resources/key_3.png", "../resources/key_4.png"}, pos, size, vel,
+        trig, isCollision, 0.3) {
+
+}
+
+bool Key::triggered(Game &game) {
+    if (!doCollision(*game.player, *this)) return false;
+    isTriggered = true;
+    game.player->keys++;
+
+    if (isAnimation) {
+        delete[] sprite;
+    } else {
+        delete sprite;
+    }
+    sprite = nullptr;
+    deleted = true;
+    return false;
+}
+
+void Key::animation(Game &game) {
+    GameObject::animation(game);
 }
