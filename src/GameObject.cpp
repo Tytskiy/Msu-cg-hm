@@ -174,7 +174,7 @@ DestructObject::DestructObject(const Point &pos, const Size &size, int vel, bool
 
 bool DestructObject::triggered(Game &game) {
     if (!doCollision(*game.player, *this)) return false;
-    if (game.inputState.keys[GLFW_KEY_F]) {
+    if (game.inputState.keys[GLFW_KEY_E]) {
         isTriggered = true;
         if (isAnimation) {
             delete[] sprite;
@@ -235,7 +235,7 @@ Door::Door(const Point &pos, const Size &size, int vel, bool trig, bool isCollis
 
 bool Door::triggered(Game &game) {
     if (!doCollision(*game.player, *this) || (game.globalTime - time) < 0.5) return false;
-    if (game.inputState.keys[GLFW_KEY_F]) {
+    if (game.inputState.keys[GLFW_KEY_E]) {
         isTriggered = true;
         currSprite = (currSprite + 1) % 2;
         isCollision = !isCollision;
@@ -255,7 +255,7 @@ Spikes::Spikes(const Point &pos, const Size &size, int vel, bool trig, bool isCo
 }
 
 bool Spikes::triggered(Game &game) {
-    if (!doCollision(*game.player, *this) || currSprite <= 2) return false;
+    if (!doCollision(*game.player, *this) || currSprite >= 2) return false;
     isTriggered = true;
     game.state = GAME_LOSE;
     return true;
@@ -263,7 +263,7 @@ bool Spikes::triggered(Game &game) {
 
 void Spikes::animation(Game &game) {
     GameObject::animation(game);
-    if (currSprite <= 2) {
+    if (currSprite >= 2) {
         isCollision = false;
     }
 }
