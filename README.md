@@ -1,3 +1,5 @@
+[![Watch the video](https://i.ibb.co/rGWbzHq/2022-05-06-13-51-17.png)](https://youtu.be/vt5fpE0bzSY)
+
 # “Классическая” rogue-like игра
 ## Вариант A0
 **Рекомендую просто склонировать репозиторий с [гитхаба](https://github.com/pandao/editor.md ), там все есть**
