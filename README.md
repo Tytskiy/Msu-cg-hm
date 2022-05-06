@@ -1,4 +1,4 @@
-[![Watch the video](https://i.ibb.co/rGWbzHq/2022-05-06-13-51-17.png)](https://youtu.be/vt5fpE0bzSY)
+[![Watch the video](https://i.ibb.co/rGWbzHq/2022-05-06-13-51-17.png)]
 
 # “Классическая” rogue-like игра
 ## Вариант A0
